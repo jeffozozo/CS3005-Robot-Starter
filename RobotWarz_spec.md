@@ -7,22 +7,24 @@ The project we are doing for our final exam is called
 You will build a text-based robot combat simulator in which robots (programs) 
 will battle it out to see which robot is the winner. This assignment will test your wits and your considerable c++ powers. 
 
+
 **The way the game works:**
 
 There will be a rectangular shaped arena, sized "width" by "height", (rows and columns) where the robots will be placed, each occupying a single row,col 'cell'. The robots are actual c++ programs themselves, loaded as shared libraries. The arena will orchestrate the action by calling functions on the robots and determining results. It will be turn based. 
 On it's turn, each robot will specify a direction for their radar to look (observing the arena) and then, based on the results of the radar scan will have the opportunity to fire a weapon, or to move. Robots hit by shots will take damage, and when their health reaches 0, they are out of the game. There are also obstacles in the arena, impassable mounds, pits (which trap the robots) and flame throwers which damage the robots severely. The last robot still operable is declared the winner. 
 
+
 **Specifications**
 
 * The arena is a 2 dimensional array of 'cells.' row 0, col 0 is the upper left corner of the arena, and row n, column m is bottom right. 
-* The arena size is configurable. Min size is 10 x 10.
+* The arena size is configurable.
 * The robots occupy a single location, a 'cell' - only one robot per cell.
 * Robots inherit from the RobotBase class and must implement the pure virtual functions. RobotBase.h and RobotBase.cpp will be provided to you.
 * The robot .cpp files are placed into the same directory as the arena, and when the game loads, the arena will compile the robots into .so (shared objects) using the arena's RobotBase.o  
 * The arena will store all the robots in a vector of robots.
 * The 'game loop' loops through each robot in the vector and calls functions on the them to orchestrate the action.
 * The steps that the arena takes when it runs are as follows:
-    1. load a config file that specifies the parameters (arena size, number and type of obstacles, max number of rounds, if you want to watch the game live or not)
+    1. Setup the parameters for the game (see Arena Setup below)
     2. place obstacles in the arena (M - Mound, P - Pit or F - Flamethrower)
     3. load the robots into a vector, assign a text character to represent the robot (like & or @) and place them randomly in the arena. When placing a robot, do not place it on an obstacle. 
     4. Loop through each robot in the vector:
@@ -38,7 +40,8 @@ On it's turn, each robot will specify a direction for their radar to look (obser
         10. if the robot returns false, call this_robot->get_move_direction and handle the move request (see Movement below). Do NOT call get_move_direction if you handled a shot case. The robots only get one action, move or shoot.
         11. log the results - print them if watching live
         12. if watching live, sleep for a second
-        13. increment the round number finish this loop.
+        13. increment the round number, finish this loop.
+
 
 **Arena Radar Scan**
     
@@ -80,6 +83,7 @@ To understand how the robots work - look closely at RobotBase.h and RobotBase.cp
   * get_move_direction - tells the arena where it wants to move and how many steps to take
 * The robot can maintain internal state so that it can make decisions about what to do when the arena calls its functions. 
 
+
 **Robot Shooting**
 
 To handle robot shots:
@@ -94,6 +98,7 @@ To handle robot shots:
 * A flame thrower shoots a flame 3 cells wide and 4 cells from the robot. Be careful not to make the flame thrower go all the way across the arena - stop it at 4 cells from the robot.
 * To calculate **damage,** the arena generates a random number based on the weapon's damage range as specfied above. Then it gets the amount of armor the target robot has and reduces the damage by armor * 10% (for example if the target has 4 armor, the damage is reduced by .4) The arena then reduces the armor on the target by 1. 
 * Multiple robots can take damage as a result of one shot. If two robots are in the line of the shot for a railgun, both robots take damage. If two robots are in the 'box' created by the flame thrower or the grenade, both robots take damage. 
+
 
 **Robot Movement**
 
@@ -116,12 +121,30 @@ The arena contains obstacles. Here are the details on the obstacles.
     Dead Robot - X: Robots cannot move through a dead robot. These act like Mounds as well. 
 
 
+**Arena Setup**
+
+When you run the arena, load your parameters from a config file using argc and argv[] to specify the filename. (Don't do it like we did in the image processor with stdin). This will allow you to interact with the game while it is running. Follow these specifications exactly and config files will be portable across arenas:
+
+Arena_Size:Height Width
+Max_Rounds:10000
+Sleep_interval:0.5
+Game_State_Live:true (or false)
+Flamethrowers:5
+Pits:5
+Mounds:5
+
+
+
 **sample run**
 
 
 You are free to print out the arena state however you like. One way might be to print a grid, like so. Note in this example, the robot is designated with an R and a special character to enable the viewer to distinguish which robot is which:
 
  ```
+./RobotWarz config.txt
+
+...
+
          =========== starting round 15 ===========
 
      0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19
