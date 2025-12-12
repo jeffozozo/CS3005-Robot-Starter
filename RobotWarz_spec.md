@@ -101,7 +101,7 @@ To handle robot shots:
 The arena checks each cell between the robot's current location and the direction it wants to move one cell at a time. If an obstacle is encountered, the appropriate action is taken. 
 
 
-**obstacles**
+**Obstacles**
 
 The arena contains obstacles. Here are the details on the obstacles.
 
@@ -109,7 +109,7 @@ The arena contains obstacles. Here are the details on the obstacles.
 
     Mound - M: The robot cannot move through the mound. The arena must stop the robot where it collides with the mound, leaving the mound in place. That is the end of movement for the robot on that round, even if it has more movement speed remaining. For example, if a robot is moving from 5,5 to 2,2 and there is a mound at 3,3, the robot is stopped at 4,4.
 
-    Flame Thrower - F: the robot moves THROUGH the flame thrower, but takes damage as if they had been hit by another robot with a flamethrower: 30-50 damage. 
+    Flame Thrower - F: the robot moves THROUGH the flame thrower, but takes damage as if they had been hit by another robot with a flamethrower: 30-50 damage. Be sure that the flame thrower perists on the board after the robot moves through it. If a robot dies while on the flame thrower then the dead robot occupies the spot and the flamethrower is now gone.
 
     Robot - R: Robots cannot move through other robots. They stop prior to moving on to the cell already occupied as if they were a Mound.
 
@@ -119,7 +119,7 @@ The arena contains obstacles. Here are the details on the obstacles.
 **sample run**
 
 
-You are free to print out the arena state however you like. One way might be to print a grid:
+You are free to print out the arena state however you like. One way might be to print a grid, like so. Note in this example, the robot is designated with an R and a special character to enable the viewer to distinguish which robot is which:
 
  ```
          =========== starting round 15 ===========
@@ -176,9 +176,13 @@ Squito % (9,8) - is out
 
 **Loading the Robots**
 
-The arena will look in the local directory when it runs, and any file named Robot_*.cpp will be loaded and compiled into an .so. Robots will inherit from RobotBase.cpp and will need to meet certain specifications. The arena will have pre-build RobotBase.o and that will be linked at the time of compile for the robots (look closely at the command below - it has RobotBase.o in it) Here is some sample code. This is NOT complete code, you'll need to read it, understand it and write it into a loop that YOU write to read the robot files from your directory and load them into a vector. 
+The arena will look in the local directory for a sub directory named 'robots' and any file named Robot_*.cpp in that subdirectory will be compiled into an .so and then dynamically loaded. Robots must inherit from RobotBase.cpp and will need to meet certain specifications. The arena will have a pre-build RobotBase.o and that will be linked at the time of compile for the robots (look closely at the command below - it has RobotBase.o in it) 
 
+Robots must expose an extern "C" function `create_robot()` that returns a pointer to the newly created robot. Look at the example robots to see this function in action. 
 
+Here is some sample code. This is NOT complete code, you'll need to read it, understand it and write it into a loop that YOU write to read the robot files from your directory and load them into a vector. 
+
+```cpp
 // Compile the file into a shared library - put this in a loop that traverses an array of all the robot.cpp files...
 std::string compile_cmd = "g++ -shared -fPIC -o " + shared_lib + " " + filename + " RobotBase.o -I. -std=c++20";
 std::cout << "Compiling " << filename << " to " << shared_lib << "...\n";
@@ -211,9 +215,10 @@ if (!create_robot)
 
 // To Instantiate the robot, you call the function that you LOADED from the shared library:
 // you'll want to ensure that this function worked and then add this robot to a vector of robots. 
-// set it up how you like...
-RobotBase* robot = create_robot();
+// once you've gotten the robot, do with it what you like, but this is how you actually call it: 
 
+RobotBase* robot = create_robot();
+```
 
 
 
