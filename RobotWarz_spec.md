@@ -124,7 +124,7 @@ The arena contains obstacles. Here are the details on the obstacles.
 **Arena Setup**
 
 When you run the arena, load your parameters from a config file using argc and argv[] to specify the filename. (Don't do it like we did in the image processor with stdin). This will allow you to interact with the game while it is running. Follow these specifications exactly and config files will be portable across arenas:
-
+```
 Arena_Size:Height Width
 Max_Rounds:10000
 Sleep_interval:0.5
@@ -132,10 +132,10 @@ Game_State_Live:true (or false)
 Flamethrowers:5
 Pits:5
 Mounds:5
+```
 
 
-
-**sample run**
+**Sample run**
 
 
 You are free to print out the arena state however you like. One way might be to print a grid, like so. Note in this example, the robot is designated with an R and a special character to enable the viewer to distinguish which robot is which:
