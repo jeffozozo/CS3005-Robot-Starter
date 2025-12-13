@@ -93,11 +93,16 @@ To handle robot shots:
     * Grenade launcher 10-40 damage, limit 10 shots
     * Flame thrower 30-50 damage 
 
-* get_shot_location allows the robot to specify a location ANYWHERE on the arena. The arena will then calculate the affected cells by starting at the robot's current location and iterating (adding a delta_x and delta_y) through the rows and columns in the direction of the shot location until the edge of the shot as specified by the weapon type.  
-* A railgun shoots through everything. Other robots, mounds, etc. It will go all the way to the edge of the arena regardless of where the shot location was specified. For example if the robot is at 2,2 and it shoots at 4,5 the 'path' of the shot would look like this: (3,3), (3,4), (4,5), (5,6), (5,7), (6,8), (7,9).
+* get_shot_location allows the robot to specify a location ANYWHERE on the arena. The arena will then calculate the affected cells by starting at the robot's current location and iterating (adding a delta_x and delta_y) through the rows and columns in the direction of the shot location until the maximum range of the shot as specified by the weapon type.  
+* A railgun shoots through everything all the way to the edge of the board. Other robots, mounds, etc. The shot will go all the way to the edge of the arena regardless of where the shot location was specified. For example if the robot is at 2,2 and it shoots at 4,5 the 'path' of the shot would look like this: (3,3), (3,4), (4,5), (5,6), (5,7), (6,8), (7,9).
 * A flame thrower shoots a flame 3 cells wide and 4 cells from the robot. Be careful not to make the flame thrower go all the way across the arena - stop it at 4 cells from the robot.
-* To calculate **damage,** the arena generates a random number based on the weapon's damage range as specfied above. Then it gets the amount of armor the target robot has and reduces the damage by armor * 10% (for example if the target has 4 armor, the damage is reduced by .4) The arena then reduces the armor on the target by 1. 
-* Multiple robots can take damage as a result of one shot. If two robots are in the line of the shot for a railgun, both robots take damage. If two robots are in the 'box' created by the flame thrower or the grenade, both robots take damage. 
+* A grenade launcher can shoot a grenade anywhere on the board and it does damage in a 3x3 square. The grenade has a limit of 10 shots.
+
+
+To calculate **damage,** the arena generates a random number based on the weapon's damage amount as specfied above. Then it gets the amount of armor the target robot has and reduces the damage by armor * 10% (for example if the target has 4 armor, the damage is reduced by .4) The arena then reduces the armor on the target by 1. 
+
+
+Multiple robots can take damage as a result of one shot. If two robots are in the line of the shot for a railgun, both robots take damage. If two robots are in the 'box' created by the flame thrower or the grenade, both robots take damage. 
 
 
 **Robot Movement**
